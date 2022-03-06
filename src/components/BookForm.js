@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Form, Button } from 'react-bootstrap';
+import { Button, Form } from 'react-bootstrap';
 import { v4 as uuidv4 } from 'uuid';
 
 const BookForm = (props) => {
@@ -72,7 +72,7 @@ const BookForm = (props) => {
   return (
     <div className="main-form">
       {errorMsg && <p className="errorMsg">{errorMsg}</p>}
-      <Form>
+      <Form onSubmit={handleOnSubmit}>
         <Form.Group controlId="name">
           <Form.Label>Book Name</Form.Label>
           <Form.Control>
@@ -82,7 +82,7 @@ const BookForm = (props) => {
             value={bookname}
             placeholder="Enter name of book"
             onChange={handleInputChange}
-          </>
+          </Form.Control>
         </Form.Group>
         <Form.Group controlId="author">
           <Form.Label>Book Author</Form.Label>
@@ -93,7 +93,7 @@ const BookForm = (props) => {
             value={author}
             placeholder="Enter name of author"
             onChange={handleInputChange}
-          </>
+          </Form.Control>
         </Form.Group>
         <Form.Group controlId="genre">
           <Form.Label>Genre</Form.Label>
@@ -104,7 +104,7 @@ const BookForm = (props) => {
             value={genre}
             placeholder="Enter genre"
             onChange={handleInputChange}
-          </>
+          </Form.Control>
         </Form.Group>
         <Form.Group controlId="published">
           <Form.Label>Publish Date</Form.Label>
@@ -115,7 +115,7 @@ const BookForm = (props) => {
             value={published}
             placeholder="Enter published date"
             onChange={handleInputChange}
-          </>
+          </Form.Control>
         </Form.Group>
         <Form.Group controlId="dateread">
           <Form.Label>Date Read</Form.Label>
@@ -126,14 +126,14 @@ const BookForm = (props) => {
             value={dateread}
             placeholder="Enter date read"
             onChange={handleInputChange}
-          </>
+          </Form.Control>
         </Form.Group>
         <Button variant="primary" type="submit" className="submit-btn">
           Submit
         </Button>
       </Form>
     </div>
-  ):
-}:
+  );
+};
 
 export default BookForm;
