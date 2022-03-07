@@ -11,8 +11,8 @@ const AppRouter = () => {
         <Header />
         <div className='main-content'>
           <Routes>
-            <Route component={Bookslist} path="/" exact={true} />
-            <Route component={AddBook} path= "/add" />
+            <Route element={<Bookslist/>} path="/" exact />
+            <Route element={<AddBook/>} path="/add" />
           </Routes>
         </div>
       </div>

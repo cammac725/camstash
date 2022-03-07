@@ -75,58 +75,58 @@ const BookForm = (props) => {
       <Form onSubmit={handleOnSubmit}>
         <Form.Group controlId="name">
           <Form.Label>Book Name</Form.Label>
-          <Form.Control>
+          <Form.Control
             className="input-control"
             type="text"
             name="bookname"
             value={bookname}
             placeholder="Enter name of book"
             onChange={handleInputChange}
-          </Form.Control>
+          />
         </Form.Group>
         <Form.Group controlId="author">
           <Form.Label>Book Author</Form.Label>
-          <Form.Control>
+          <Form.Control
             className="input-control"
             type="text"
             name="author"
             value={author}
             placeholder="Enter name of author"
             onChange={handleInputChange}
-          </Form.Control>
+          />
         </Form.Group>
         <Form.Group controlId="genre">
           <Form.Label>Genre</Form.Label>
-          <Form.Control>
+          <Form.Control
             className="input-control"
             type="text"
             name="genre"
             value={genre}
             placeholder="Enter genre"
             onChange={handleInputChange}
-          </Form.Control>
+          />
         </Form.Group>
         <Form.Group controlId="published">
           <Form.Label>Publish Date</Form.Label>
-          <Form.Control>
+          <Form.Control
             className="input-control"
-            type="text"
+            type="number"
             name="published"
             value={published}
-            placeholder="Enter published date"
+            placeholder="Enter the year the book was published"
             onChange={handleInputChange}
-          </Form.Control>
+          />
         </Form.Group>
         <Form.Group controlId="dateread">
           <Form.Label>Date Read</Form.Label>
-          <Form.Control>
+          <Form.Control
             className="input-control"
-            type="text"
+            type="date"
             name="dateread"
             value={dateread}
-            placeholder="Enter date read"
+            placeholder="Enter the date the book was finished"
             onChange={handleInputChange}
-          </Form.Control>
+          />
         </Form.Group>
         <Button variant="primary" type="submit" className="submit-btn">
           Submit
