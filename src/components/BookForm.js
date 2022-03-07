@@ -3,12 +3,14 @@ import { Button, Form } from 'react-bootstrap';
 import { v4 as uuidv4 } from 'uuid';
 
 const BookForm = (props) => {
-  const [book, setBook] = useState({
-    bookname: props.book ? props.book.bookname : '',
-    author: props.book ? props.book.author : '',
-    genre: props.book ? props.book.genre : '',
-    published: props.book ? props.book.published : '',
-    dateread: props.book ? props.book.dateread : ''
+  const [book, setBook] = useState(() => {
+    return {
+      bookname: props.book ? props.book.bookname : '',
+      author: props.book ? props.book.author : '',
+      genre: props.book ? props.book.genre : '',
+      published: props.book ? props.book.published : '',
+      dateread: props.book ? props.book.dateread : ''
+    }
   });
 
   const [errorMsg, setErrorMsg] = useState('');
@@ -121,10 +123,10 @@ const BookForm = (props) => {
           <Form.Label>Date Read</Form.Label>
           <Form.Control
             className="input-control"
-            type="date"
+            type="number"
             name="dateread"
             value={dateread}
-            placeholder="Enter the date the book was finished"
+            placeholder="Enter the year the book was finished"
             onChange={handleInputChange}
           />
         </Form.Group>
