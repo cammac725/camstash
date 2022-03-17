@@ -1,14 +1,17 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { Redirect, Route, Switch, useHistory } from 'react-router-dom'
+import BookForm from './components/Books/bookForm'
+import BookHeader from './components/Books/bookHeader'
+import SortBooks from './components/Books/sortBooks'
 import Layout from './components/LayOut/layout'
 import ErrorMessage from './components/Messages/errorMessage'
 import SuccessMessage from './components/Messages/successMessage'
 import Auth from './components/SignIn/auth'
 import LoginForm from './components/SignIn/loginForm'
+import Toggleable from './components/UI/toggleable'
 import bookService from './services/books'
 import loginService from './services/login'
 import signUpService from './services/signUp'
-
 
 const App = () => {
   const [books, setBooks] = useState([])
@@ -201,7 +204,17 @@ const App = () => {
           />  
         </Route>
         <Route path='/books'>
-            
+          <div className='headerNsort'>
+            <BookHeader />
+            <SortBooks sortArray={sortArray} />
+          </div>
+          <Toggleable
+            buttonLabel='Add a book'
+            ref={bookFormRef}
+            className='hideWhenVisible'
+          >
+            <BookForm addBook={addBook} />
+          </Toggleable>
         </Route>
       </Switch>
     </Layout>
