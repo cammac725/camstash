@@ -1,9 +1,13 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { Route, Switch, useHistory } from 'react-router-dom'
-import Layout from './components/LayOut'
+import { Redirect, Route, Switch, useHistory } from 'react-router-dom'
+import Layout from './components/LayOut/layout'
 import ErrorMessage from './components/Messages/errorMessage'
 import SuccessMessage from './components/Messages/successMessage'
+import Auth from './components/SignIn/auth'
+import LoginForm from './components/SignIn/loginForm'
 import bookService from './services/books'
+import loginService from './services/login'
+import signUpService from './services/signUp'
 
 
 const App = () => {
@@ -11,7 +15,10 @@ const App = () => {
   const [user, setUser] = useState(null)
   const [errorMessage, setErrorMessage] = useState(null)
   const [successMessage, setSuccessMessage] = useState(null)
-  const [loading, setLoading] = useState(true);
+  const [showSignUp, setShowSignUp] = useState(false)
+  const [showLogin, setShowLogin] = useState(false)
+  const [loading, setLoading] = useState(true)
+
   const history = useHistory()
   const bookFormRef = useRef()
 
@@ -82,21 +89,121 @@ const App = () => {
     }
   }
 
+  const deleteBook = async (delId) => {
+    const id = delId
+    const copyOfBooks = [...books]
+    const findBook = { ...copyOfBooks.find((a) => a.id === delId) }
+    const filterById = copyOfBooks.filter((b) => b.id !== id)
+
+    if (window.confirm(`Delete book ${findBook.title} ?`)) {
+      try {
+        await bookService.remove(id)
+        setBooks(filterById)
+        setSuccessMessage('The book was successfully deleted')
+        setTimeout(() => {
+          setSuccessMessage(null)
+        }, 5000)
+      } catch (exception) {
+        console.log('delete error:', exception.message)
+        setErrorMessage(
+          "You can't remove a book that hasn't been added.",
+          exception
+        )
+        setTimeout(() => {
+          setErrorMessage(null)
+        }, 5000)
+      }
+    }
+  }
+
+  const logout = () => {
+    window.localStorage.clear()
+    bookService.setToken(null)
+    setUser(null)
+    setShowSignUp(false)
+    setShowLogin(false)
+    setSuccessMessage('Successfully logged out')
+    setTimeout(() => {
+      setSuccessMessage(null)
+    }, 5000)
+  }
+
+  const handleLogin = async (userInfo) => {
+    let user
+    try {
+      if (showSignUp) {
+        user = await signUpService.signUP(userInfo)
+      } else {
+        user = await loginService.login(userInfo)
+      }
+      window.localStorage.setItem(
+        'loggedBookappUser',
+        JSON.stringify(user)
+      )
+      bookService.setToken(user.token)
+      setUser(user)
+      history.push('/books')
+    } catch (exception) {
+        console.log('error on login', exception.message)
+
+        if (JSON.stringify(exception.response.data).includes('unique')) {
+          setErrorMessage(
+            `Username '${userInfo.username}' is already in use.`
+          )
+          setTimeout(() => {
+            setErrorMessage(null)
+          }, 5000)
+        } else if (
+            JSON.stringify(exception.response.data).includes(
+              'invalid username or password'
+            )
+        ) {
+          setErrorMessage('Invalid username or password')
+          setTimeout(() => {
+            setErrorMessage(null)
+          },5000)
+        }
+    }
+  }
+
   return (
-    <Layout>
+    <Layout user={user}>
       <SuccessMessage successMessage={successMessage} />
       <ErrorMessage errorMessage={errorMessage} />
-      <div>
-        <Header />
-        <div className='main-content'>
-        <BooksContext.Provider value={{ books, setBooks }}>
-          <Switch>
-            <Route component={Bookslist} path="/" exact />
-            <Route component={EditBook} path="/editbook/:id" />
-          </Switch>
-        </BooksContext.Provider>
-        </div>
-      </div>
+      <Switch>
+        <Route path='/' exact>
+          <Redirect to='/auth'></Redirect>
+        </Route>
+        <Route path='/auth'>
+          {!showSignUp || !showLogin ? (
+            <Auth
+              showSignUp={showSignUp}
+              setShowLogin={setShowLogin}
+              setShowSignUp={setShowSignUp}
+            />
+          ) : (
+            <></>
+          )}
+        </Route>
+        <Route path='/login'>
+          {' '}
+          <LoginForm
+            handleLogin={handleLogin}
+            showSignUp={showSignUp}
+            setErrorMessage={setErrorMessage}
+          />
+        </Route>
+        <Route path='/signup'>
+          <LoginForm
+            handleLogin={handleLogin}
+            showSignUp={showSignUp}
+            setErrorMessage={setErrorMessage}
+          />  
+        </Route>
+        <Route path='/books'>
+            
+        </Route>
+      </Switch>
     </Layout>
   );
 };

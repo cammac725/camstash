@@ -1,0 +1,12 @@
+.authButtons {
+  padding: 3rem 0rem;
+  background-color: #5f81ad;
+  margin: 2rem auto;
+  width: 50rem;
+  max-width: 95%;
+  border-radius: 12px;
+  display: flex;
+  justify-content: center;
+  opacity: 0.9;
+  font-size: 24px;
+}
