@@ -1,13 +1,17 @@
 import React, { useEffect, useRef, useState } from 'react'
+import { Spinner } from 'react-bootstrap'
 import { Redirect, Route, Switch, useHistory } from 'react-router-dom'
+import Book from './components/Books/book'
 import BookForm from './components/Books/bookForm'
 import BookHeader from './components/Books/bookHeader'
 import SortBooks from './components/Books/sortBooks'
+import About from './components/LayOut/about'
 import Layout from './components/LayOut/layout'
 import ErrorMessage from './components/Messages/errorMessage'
 import SuccessMessage from './components/Messages/successMessage'
 import Auth from './components/SignIn/auth'
 import LoginForm from './components/SignIn/loginForm'
+import LogoutUser from './components/SignIn/logout'
 import Toggleable from './components/UI/toggleable'
 import bookService from './services/books'
 import loginService from './services/login'
@@ -185,7 +189,7 @@ const App = () => {
               setShowSignUp={setShowSignUp}
             />
           ) : (
-            <></>
+            <React.Fragment></React.Fragment>
           )}
         </Route>
         <Route path='/login'>
@@ -215,10 +219,32 @@ const App = () => {
           >
             <BookForm addBook={addBook} />
           </Toggleable>
+
+          {loading ? (
+            <Spinner loading={loading} />
+          ) : (
+            <React.Fragment>
+              {books.map((book) => (
+                <Book
+                  key={book.id}
+                  book={book}
+                  Toogleable={Toggleable}
+                  deleteBook={deleteBook}
+                  loading={loading}
+                />
+              ))}
+            </React.Fragment>
+          )}
+        </Route>
+        <Route path='/about'>
+          <About />
+        </Route>
+        <Route path='logout'>
+          <LogoutUser user={user} logout={logout} />
         </Route>
       </Switch>
     </Layout>
-  );
-};
+  )
+}
 
 export default App;
