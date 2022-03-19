@@ -4,7 +4,7 @@ import classes from './bookHeader.module.css'
 const BookHeader = () => {
   return (
     <div className={classes.bookHeaderStyle}>
-      This page contains books added by authenticated users
+      This page contains all the books added by Cam
     </div>
   )
 }

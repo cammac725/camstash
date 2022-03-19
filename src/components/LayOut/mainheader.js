@@ -1,25 +1,11 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import classes from './MainHeader.module.css';
+import classes from './mainheader.module.css';
 
-const MainHeader = ({ user }) => {
+const MainHeader = () => {
   return (
     <header>
       <ul>
-        {user === null && (
-          <li>
-            <NavLink activeClassName={classes.active} to='/auth'>
-              Auth
-            </NavLink>
-          </li>
-        )}
-        {user !== null && (
-          <li>
-            <NavLink activeClassName={classes.active} to='/logout'>
-              Logout
-            </NavLink>
-          </li>
-        )}
         <li>
           <NavLink activeClassName={classes.active} to='/books'>
             Books

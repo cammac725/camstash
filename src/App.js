@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { Spinner } from 'react-bootstrap'
-import { Redirect, Route, Switch, useHistory } from 'react-router-dom'
+import { Route, Switch } from 'react-router-dom'
+import './App.css'
 import Book from './components/Books/book'
 import BookForm from './components/Books/bookForm'
 import BookHeader from './components/Books/bookHeader'
@@ -9,24 +10,15 @@ import About from './components/LayOut/about'
 import Layout from './components/LayOut/layout'
 import ErrorMessage from './components/Messages/errorMessage'
 import SuccessMessage from './components/Messages/successMessage'
-import Auth from './components/SignIn/auth'
-import LoginForm from './components/SignIn/loginForm'
-import LogoutUser from './components/SignIn/logout'
 import Toggleable from './components/UI/toggleable'
-import bookService from './services/books'
-import loginService from './services/login'
-import signUpService from './services/signUp'
+import * as bookService from './services/books'
 
 const App = () => {
   const [books, setBooks] = useState([])
-  const [user, setUser] = useState(null)
   const [errorMessage, setErrorMessage] = useState(null)
   const [successMessage, setSuccessMessage] = useState(null)
-  const [showSignUp, setShowSignUp] = useState(false)
-  const [showLogin, setShowLogin] = useState(false)
   const [loading, setLoading] = useState(true)
 
-  const history = useHistory()
   const bookFormRef = useRef()
 
   useEffect(() => {
@@ -38,15 +30,6 @@ const App = () => {
         setLoading(true)
         console.error('Error on loading books:', error)
       })
-  }, [])
-
-  useEffect(() => {
-    const loggedUserJSON = window.localStorage.getItem('loggedBookappUser')
-    if (loggedUserJSON) {
-      const user = JSON.parse(loggedUserJSON)
-      setUser(user)
-      bookService.setToken(user.token)
-    }
   }, [])
 
   const sortArray = (type) => {
@@ -89,7 +72,7 @@ const App = () => {
       }, 5000)
     } catch (exception) {
         console.log('exception', exception.message)
-        setErrorMessage('You must log in before you can add books')
+        setErrorMessage('You cannot add a book')
         setTimeout(() => {
           setErrorMessage(null)
         }, 5000)
@@ -123,90 +106,13 @@ const App = () => {
     }
   }
 
-  const logout = () => {
-    window.localStorage.clear()
-    bookService.setToken(null)
-    setUser(null)
-    setShowSignUp(false)
-    setShowLogin(false)
-    setSuccessMessage('Successfully logged out')
-    setTimeout(() => {
-      setSuccessMessage(null)
-    }, 5000)
-  }
-
-  const handleLogin = async (userInfo) => {
-    let user
-    try {
-      if (showSignUp) {
-        user = await signUpService.signUP(userInfo)
-      } else {
-        user = await loginService.login(userInfo)
-      }
-      window.localStorage.setItem(
-        'loggedBookappUser',
-        JSON.stringify(user)
-      )
-      bookService.setToken(user.token)
-      setUser(user)
-      history.push('/books')
-    } catch (exception) {
-        console.log('error on login', exception.message)
-
-        if (JSON.stringify(exception.response.data).includes('unique')) {
-          setErrorMessage(
-            `Username '${userInfo.username}' is already in use.`
-          )
-          setTimeout(() => {
-            setErrorMessage(null)
-          }, 5000)
-        } else if (
-            JSON.stringify(exception.response.data).includes(
-              'invalid username or password'
-            )
-        ) {
-          setErrorMessage('Invalid username or password')
-          setTimeout(() => {
-            setErrorMessage(null)
-          },5000)
-        }
-    }
-  }
-
   return (
-    <Layout user={user}>
+    <Layout>
       <SuccessMessage successMessage={successMessage} />
       <ErrorMessage errorMessage={errorMessage} />
       <Switch>
-        <Route path='/' exact>
-          <Redirect to='/auth'></Redirect>
-        </Route>
-        <Route path='/auth'>
-          {!showSignUp || !showLogin ? (
-            <Auth
-              showSignUp={showSignUp}
-              setShowLogin={setShowLogin}
-              setShowSignUp={setShowSignUp}
-            />
-          ) : (
-            <React.Fragment></React.Fragment>
-          )}
-        </Route>
-        <Route path='/login'>
-          {' '}
-          <LoginForm
-            handleLogin={handleLogin}
-            showSignUp={showSignUp}
-            setErrorMessage={setErrorMessage}
-          />
-        </Route>
-        <Route path='/signup'>
-          <LoginForm
-            handleLogin={handleLogin}
-            showSignUp={showSignUp}
-            setErrorMessage={setErrorMessage}
-          />  
-        </Route>
+        <Route path='/' exact />
+        
         <Route path='/books'>
           <div className='headerNsort'>
             <BookHeader />
@@ -239,12 +145,9 @@ const App = () => {
         <Route path='/about'>
           <About />
         </Route>
-        <Route path='logout'>
-          <LogoutUser user={user} logout={logout} />
-        </Route>
       </Switch>
     </Layout>
   )
 }
-
+ 
 export default App;
